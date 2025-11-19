@@ -1,41 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Python Demo</title>
+    <meta charset="UTF-8">
+    <title>Love Score Calculator</title>
 
     <!-- PyScript -->
-    <script defer src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script defer src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
 
-    <h2>Python Browser Demo</h2>
+    <h2>Love Score Calculator ❤️</h2>
 
-    <p>Enter a number:</p>
-    <input id="user-input" type="number">
+    <p>Enter Name 1:</p>
+    <input id="name1" type="text">
 
-    <button id="run-btn">Run</button>
+    <p>Enter Name 2:</p>
+    <input id="name2" type="text">
 
-    <h3>Output:</h3>
+    <button id="calc-btn">Calculate Love Score</button>
+
     <div id="output"></div>
 
     <py-script>
 from js import document
 
-def run_python(event):
-    input_value = document.getElementById("user-input").value
+def calculate_love_score(name1, name2):
+    name3 = name1 + name2
+    count1 = sum(1 for i in name3.lower() if i in "true")
+    count2 = sum(1 for i in name3.lower() if i in "love")
+    result = int(str(count1) + str(count2))
+    return result
 
-    if input_value == "":
-        document.getElementById("output").innerHTML = "Please enter a number!"
+def run_python(event=None):
+    n1 = document.getElementById("name1").value.strip()
+    n2 = document.getElementById("name2").value.strip()
+
+    if n1 == "" or n2 == "":
+        document.getElementById("output").innerHTML = "Please enter both names!"
         return
+    
+    score = calculate_love_score(n1, n2)
+    document.getElementById("output").innerHTML = f"Love Score: {score}% ❤️"
 
-    num = float(input_value)
-    result = num * 2   # example operation
-
-    document.getElementById("output").innerHTML = f"Result: {result}"
-
-# attach python function to button click
-document.getElementById("run-btn").addEventListener("click", run_python)
+# Attach Python function to button
+document.getElementById("calc-btn").addEventListener("click", run_python)
     </py-script>
 
 </body>
