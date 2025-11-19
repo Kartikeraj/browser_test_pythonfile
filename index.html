@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Python Project</title>
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <title>Python Demo</title>
+
+    <!-- PyScript -->
+    <script defer src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
 </head>
 <body>
 
-    <h2>My Python Project Demo</h2>
+    <h2>Python Browser Demo</h2>
 
-    <p>Enter your number:</p>
-    <input id="user-input" />
+    <p>Enter a number:</p>
+    <input id="user-input" type="number">
 
-    <button onclick="run_python()">Run</button>
+    <button id="run-btn">Run</button>
 
-    <p>Output:</p>
+    <h3>Output:</h3>
     <div id="output"></div>
 
     <py-script>
-from pyscript import display
+from js import document
 
-def run_python():
-    value = float(Element("user-input").element.value)
-    display(f"You entered: {value}", target="output")
+def run_python(event):
+    input_value = document.getElementById("user-input").value
+
+    if input_value == "":
+        document.getElementById("output").innerHTML = "Please enter a number!"
+        return
+
+    num = float(input_value)
+    result = num * 2   # example operation
+
+    document.getElementById("output").innerHTML = f"Result: {result}"
+
+# attach python function to button click
+document.getElementById("run-btn").addEventListener("click", run_python)
     </py-script>
-
-    <script>
-        function run_python() {
-            pyscript.runPython("run_python()")
-        }
-    </script>
 
 </body>
 </html>
