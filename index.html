@@ -4,60 +4,58 @@
   <meta charset="utf-8" />
   <title>Love Score — PyScript Fixed</title>
 
-  <!-- Pin a known PyScript release -->
+  <!-- PyScript -->
   <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.1/core.css">
   <script type="module" src="https://pyscript.net/releases/2025.11.1/core.js"></script>
 
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body { font-family: system-ui, Arial; max-width:720px; margin:24px auto; padding:12px; }
-    input, button { font-size:16px; padding:10px; margin-top:8px; width:100%; box-sizing:border-box; }
+    body { font-family: Arial; max-width:600px; margin:auto; padding:20px; }
+    input, button { width:100%; padding:10px; margin-top:10px; font-size:17px; }
     button { cursor:pointer; }
-    #output { margin-top:16px; font-weight:700; font-size:18px; }
+    #output { margin-top:20px; font-size:20px; font-weight:bold; }
   </style>
 </head>
 <body>
-  <h1>Love Score Calculator ❤️</h1>
 
-  <label for="name1">Name 1</label>
-  <input id="name1" type="text" placeholder="Enter first name">
+  <h2>Love Score Calculator ❤️</h2>
 
-  <label for="name2">Name 2</label>
-  <input id="name2" type="text" placeholder="Enter second name">
+  <label>Name 1:</label>
+  <input id="name1" type="text">
+
+  <label>Name 2:</label>
+  <input id="name2" type="text">
 
   <button id="calc-btn">Calculate Love Score</button>
 
-  <div id="output" role="status" aria-live="polite"></div>
+  <div id="output"></div>
 
   <py-script>
-# ---------- Python (runs in browser) ----------
 from js import document, window
-from pyodide.ffi import create_once_callable
+from pyodide.ffi import create_proxy    # PERSISTENT callback
 
 def calculate_love_score(name1, name2):
     name3 = name1 + name2
     count1 = sum(1 for i in name3.lower() if i in "true")
     count2 = sum(1 for i in name3.lower() if i in "love")
-    # combine digits (e.g. 3 and 4 -> 34)
-    result = int(str(count1) + str(count2))
-    return result
+    return int(str(count1) + str(count2))
 
-def py_handler(evt):
-    # fetch inputs
+def handler(event):
     n1 = document.getElementById("name1").value.strip()
     n2 = document.getElementById("name2").value.strip()
     if not n1 or not n2:
         document.getElementById("output").innerHTML = "Please enter both names."
         return
+    
     score = calculate_love_score(n1, n2)
     document.getElementById("output").innerHTML = f"Love Score: {score}% ❤️"
 
-# Create a JS-callable that will live in JS land and won't be auto-destroyed.
-# Storing it on window ensures it persists.
-js_callable = create_once_callable(py_handler)
-window.love_calc_handler = js_callable
+# Persistent proxy that will NEVER auto-destroy
+proxy = create_proxy(handler)
 
-# Attach the JS-callable to the button's click event.
+# Store on window so GC won’t remove it
+window.love_calc_handler = proxy
+
+# Attach once and works forever
 document.getElementById("calc-btn").addEventListener("click", window.love_calc_handler)
   </py-script>
 
