@@ -1,78 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Love Score Calculator</title>
+  <meta charset="utf-8" />
+  <title>PyScript Test — Browser Test</title>
 
-    <!-- PyScript -->
-    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-    <script defer src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+  <!-- PyScript (pinned release) -->
+  <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2025.11.1/core.js"></script>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 400px;
-            margin: auto;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px;
-            width: 100%;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        #output {
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-    </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial; max-width:720px; margin:24px auto; padding:12px; }
+    input, button { font-size:16px; padding:8px; margin-top:8px; width:100%; box-sizing:border-box; }
+    button { cursor:pointer; }
+    #output { margin-top:16px; font-weight:600; }
+  </style>
 </head>
-
 <body>
 
-    <h2>Love Score Calculator ❤️</h2>
+  <h1>PyScript Demo — Number * 2</h1>
 
-    <p>Enter Name 1:</p>
-    <input id="name1" type="text">
+  <label>Enter a number</label>
+  <input id="user-input" type="number" placeholder="Type a number...">
 
-    <p>Enter Name 2:</p>
-    <input id="name2" type="text">
+  <button id="run-btn">Run</button>
 
-    <button id="calc-btn">Calculate Love Score</button>
+  <div id="output" aria-live="polite"></div>
 
-    <div id="output"></div>
-
-    <py-script>
+  <!-- Python code runs only if PyScript is correctly loaded -->
+  <py-script>
 from js import document
 
-def calculate_love_score(name1, name2):
-    name3 = name1 + name2
-    count1 = sum(1 for i in name3.lower() if i in "true")
-    count2 = sum(1 for i in name3.lower() if i in "love")
-    result = int(str(count1) + str(count2))
-    return result
-
-def run_python(event=None):
-    n1 = document.getElementById("name1").value.strip()
-    n2 = document.getElementById("name2").value.strip()
-
-    if n1 == "" or n2 == "":
-        document.getElementById("output").innerHTML = "Please enter both names!"
+def run_python(evt=None):
+    v = document.getElementById("user-input").value
+    if v == "":
+        document.getElementById("output").innerHTML = "Please enter a number!"
         return
-    
-    score = calculate_love_score(n1, n2)
-    document.getElementById("output").innerHTML = f"Love Score: {score}% ❤️"
+    try:
+        n = float(v)
+    except Exception as e:
+        document.getElementById("output").innerHTML = f"Not a valid number: {e}"
+        return
+    document.getElementById("output").innerHTML = f"Result: {n * 2}"
 
-# Attach Python function to button
-document.getElementById("calc-btn").addEventListener("click", run_python)
-    </py-script>
+# attach handler
+document.getElementById("run-btn").addEventListener("click", run_python)
+  </py-script>
 
 </body>
 </html>
