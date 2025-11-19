@@ -2,49 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>PyScript Test — Browser Test</title>
+  <title>PyScript Fixed Demo</title>
 
-  <!-- PyScript (pinned release) -->
+  <!-- PyScript -->
   <link rel="stylesheet" href="https://pyscript.net/releases/2025.11.1/core.css">
   <script type="module" src="https://pyscript.net/releases/2025.11.1/core.js"></script>
 
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body { font-family: system-ui, Arial; max-width:720px; margin:24px auto; padding:12px; }
-    input, button { font-size:16px; padding:8px; margin-top:8px; width:100%; box-sizing:border-box; }
+    body { font-family: Arial; max-width:600px; margin:auto; padding:20px; }
+    input, button { width:100%; padding:10px; margin-top:10px; font-size:17px; }
     button { cursor:pointer; }
-    #output { margin-top:16px; font-weight:600; }
+    #output { margin-top:20px; font-size:20px; font-weight:bold; }
   </style>
 </head>
 <body>
 
-  <h1>PyScript Demo — Number * 2</h1>
+  <h2>PyScript — Input Test</h2>
 
-  <label>Enter a number</label>
-  <input id="user-input" type="number" placeholder="Type a number...">
+  Enter a number:
+  <input id="user-input" type="number">
 
   <button id="run-btn">Run</button>
 
-  <div id="output" aria-live="polite"></div>
+  <div id="output"></div>
 
-  <!-- Python code runs only if PyScript is correctly loaded -->
   <py-script>
 from js import document
+from pyodide.ffi import create_proxy   # FIX REQUIRED
 
-def run_python(evt=None):
-    v = document.getElementById("user-input").value
-    if v == "":
-        document.getElementById("output").innerHTML = "Please enter a number!"
+def run_python(event):
+    value_str = document.getElementById("user-input").value
+    if value_str == "":
+        document.getElementById("output").innerHTML = "Please enter a number"
         return
-    try:
-        n = float(v)
-    except Exception as e:
-        document.getElementById("output").innerHTML = f"Not a valid number: {e}"
-        return
-    document.getElementById("output").innerHTML = f"Result: {n * 2}"
 
-# attach handler
-document.getElementById("run-btn").addEventListener("click", run_python)
+    n = float(value_str)
+    result = n * 2
+    document.getElementById("output").innerHTML = f"Result: {result}"
+
+# ---- FIX: use create_proxy so PyScript keeps callback alive ----
+proxy = create_proxy(run_python)
+document.getElementById("run-btn").addEventListener("click", proxy)
   </py-script>
 
 </body>
